@@ -20,7 +20,7 @@ from stability.stability_metrics import StabilityMetrics
 os.environ['PYOPENGL_PLATFORM'] = 'egl'
 
 from smplx import SMPL
-SMPL_MODEL_DIR = '/ps/project/alignment/models/smplx_internal/smpl/'
+SMPL_MODEL_DIR = '/home/bossun/Projects/3rd_party/ipman-r/data/models/smpl'
 SMPL_BATCH_SIZE = 500
 smpl_obj = SMPL(
             SMPL_MODEL_DIR,
@@ -51,6 +51,7 @@ def vis_vert_with_ground(vertices, trans, seq_name, vis_path='dummy', device='cu
         in_bos_label, com, contact_metric, contact_mask = STABILITY_METRICS.check_bos_interior(vertices, faces,
                                                                                  contact_thresh=contact_thresh)
 
+        IMGS = []
         for fnum in range(min(smpl_batch_size // sub_sample, len(vertices))):
             # check stability (com inside bos)
             if visualize:
@@ -113,7 +114,8 @@ def vis_vert_with_ground(vertices, trans, seq_name, vis_path='dummy', device='cu
                                           com=com.cpu().numpy(),
                                           bottomview=True,
                                           draw_ground_plane=False,
-                                          gmof_rho=contact_thresh)
+                                          gmof_rho=contact_thresh,
+                                          draw_contact=True)
 
                 # save image
                 if len(imgnames) == 0:
@@ -123,7 +125,8 @@ def vis_vert_with_ground(vertices, trans, seq_name, vis_path='dummy', device='cu
                     filename = os.path.join(out_dir, new_img_name)
                 print(f'Saved filename: {filename}')
 
-                IMG = np.hstack((view1, view2, view3, img_bottom))
+                # IMG = np.hstack((view1, view2, view3, img_bottom))
+                IMG = img_bottom
                 IMG = pil_img.fromarray(IMG)
                 # draw = ImageDraw.Draw(IMG)
                 # font = ImageFont.truetype("arial.ttf", 100)
@@ -134,8 +137,9 @@ def vis_vert_with_ground(vertices, trans, seq_name, vis_path='dummy', device='cu
                 # else:
                 #     draw.text((0, 0), "Unstable: In contact", (255, 0, 0), font=font)
                 IMG.save(filename)
+                IMGS.append(IMG)
                 img_count += 1
-    return in_bos_label.squeeze(), contact_metric.squeeze(), contact_mask.squeeze()
+    return in_bos_label.squeeze(), contact_metric.squeeze(), contact_mask.squeeze(), IMGS
 
 def vis_smpl_with_ground(thetas, transl, betas, seq_name, vis_path, device='cuda',
                          start_idx=0, sub_sample=5, ground_offset=GROUND_OFFSETS['h36m'], contact_thresh=CONTACT_THRESH,

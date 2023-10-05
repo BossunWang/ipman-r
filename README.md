@@ -22,6 +22,10 @@ pip install -U pip
 pip install torch==1.1.0 torchvision==0.3.0
 pip install neural-renderer-pytorch
 pip install -r requirements.txt
+git clone https://github.com/MPI-IS/mesh.git
+sudo apt-get install libboost-dev
+BOOST_INCLUDE_DIRS=/path/to/boost/include make all
+pip install -e .
 ```
 
 After finishing with the installation, you can continue with running the demo/evaluation/training code.

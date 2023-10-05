@@ -17,13 +17,12 @@ pyopengl
 pandas==1.3.4
 pathlib
 Pillow==8.4.0
-psbody-mesh @ git+https://github.com/MPI-IS/mesh.git@49e70425cf373ec5269917012bda2944215c5ccd
 pyrender==0.1.33
 pytorch3d==0.3.0
 scikit-image==0.18.3
 scipy==1.2.3
 shortuuid==1.0.8
-spacepy==0.2.3
+spacepy
 tensorboard
 torchgeometry==0.1.2
 torchmetrics==0.4.1
